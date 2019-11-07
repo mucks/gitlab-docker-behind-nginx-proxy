@@ -1,0 +1,32 @@
+version: "3.1"
+
+services:
+
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: gitlab
+    volumes:
+      - 'config:/etc/gitlab'
+      - 'logs:/var/log/gitlab'
+      - 'data:/var/opt/gitlab'
+    ports:
+      - "22:22"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+         external_url 'http://gitlab.example.tld'
+         nginx['listen_port'] = 80
+         nginx['listen_https'] = false
+
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST}
+      VIRTUAL_PORT: 80
+
+volumes:
+  config:
+  data:
+  logs:
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
